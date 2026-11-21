@@ -1,0 +1,37 @@
+{
+  "name": "view-me-claude",
+  "displayName": "View Me Claude",
+  "description": "A light panel beside Claude Code: your phones (adb), running Claude agents and running builds, live.",
+  "version": "0.1.0",
+  "publisher": "buggypather",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/buggypather/view-me-claude" },
+  "engines": { "vscode": "^1.90.0" },
+  "categories": ["Other"],
+  "main": "./extension.js",
+  "activationEvents": ["onStartupFinished"],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [{ "id": "viewMeClaude", "title": "View Me Claude", "icon": "media/icon.svg" }]
+    },
+    "views": {
+      "viewMeClaude": [{ "type": "webview", "id": "viewMeClaude.panel", "name": "Phones, agents, builds" }]
+    },
+    "commands": [
+      { "command": "viewMeClaude.toggle", "title": "Toggle View Me Claude", "icon": "media/icon.svg" },
+      { "command": "viewMeClaude.refresh", "title": "View Me Claude: Refresh", "icon": "$(refresh)" }
+    ],
+    "menus": {
+      "editor/title": [{ "command": "viewMeClaude.toggle", "group": "navigation@100" }],
+      "view/title": [{ "command": "viewMeClaude.refresh", "when": "view == viewMeClaude.panel", "group": "navigation" }]
+    },
+    "configuration": {
+      "title": "View Me Claude",
+      "properties": {
+        "viewMeClaude.intervalSeconds": { "type": "number", "default": 10, "minimum": 3, "description": "How often to check while the panel is visible. Raise it on a slow computer." },
+        "viewMeClaude.adbPath": { "type": "string", "default": "", "description": "Full path to adb if it isn't on PATH (e.g. C:\\Users\\you\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe)." }
+      }
+    }
+  },
+  "scripts": { "test": "node --test" }
+}
