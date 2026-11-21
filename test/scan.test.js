@@ -18,3 +18,13 @@ test('sorts agents and builds', () => {
   assert.deepStrictEqual(agents.map(a => a.pid), ['1', '2']);
   assert.deepStrictEqual(builds.map(b => b.kind), ['Gradle', 'Vite']);
 });
+
+test('finds servers started by an agent', () => {
+  const { servers } = classify([
+    { pid: '10', ppid: '1', cmd: 'claude.exe' },
+    { pid: '11', ppid: '10', cmd: 'cmd.exe /c npm run dev', name: 'x' },
+    { pid: '12', ppid: '11', cmd: 'node vite.js --port 5173', ports: ['5173'] },
+    { pid: '20', ppid: '1', cmd: 'node other.js', ports: ['3000'] },
+  ]);
+  assert.deepStrictEqual(servers.map(s => [s.pid, s.agent]), [['12', '10']]);
+});
