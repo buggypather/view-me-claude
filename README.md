@@ -13,13 +13,13 @@ It's written for slow computers. It's plain JavaScript with no dependencies and 
 
 ## Install
 
-1. Download the source (Code → Download ZIP) or `git clone https://github.com/buggypather/view-me-claude`.
-2. Copy the folder into your extensions folder:
-   - Windows: `%USERPROFILE%\.vscode\extensions\view-me-claude`
-   - macOS / Linux: `~/.vscode/extensions/view-me-claude`
-3. Restart VS Code.
-
-You can also package it with `npx @vscode/vsce package` and install the `.vsix` with **Extensions → … → Install from VSIX**.
+- **VS Code:** Extensions panel → search **View Me Claude** → Install. Or from the
+  [Marketplace page](https://marketplace.visualstudio.com/items?itemName=buggypather.view-me-claude).
+- **VSCodium, Cursor and other editors using Open VSX:** search **View Me Claude** in their
+  Extensions panel, or see [Open VSX](https://open-vsx.org/extension/buggypather/view-me-claude).
+- **From a file:** download the `.vsix` from the
+  [latest release](https://github.com/buggypather/view-me-claude/releases/latest), then
+  Extensions → **…** → **Install from VSIX**.
 
 ## Using it
 
@@ -29,15 +29,26 @@ You can also package it with `npx @vscode/vsce package` and install the `.vsix` 
   - `viewMeClaude.intervalSeconds` sets how often it checks. Raise it to 20 or 30 on a slow PC.
   - `viewMeClaude.adbPath` sets where adb is, if it isn't found on its own. By default it looks in `%LOCALAPPDATA%\Android\Sdk\platform-tools`, then `ANDROID_HOME`, then PATH.
 
-## Usage percentages (status-line helper)
+## Usage percentages
 
-Claude Code passes your plan usage to its status line. This helper saves it for the panel, and shows `5h 42% · week 18%` under the chat box too. Add this to `%USERPROFILE%\.claude\settings.json` (macOS/Linux: `~/.claude/settings.json`), with the folder you installed to:
+Claude Code passes your plan usage to its status line. View Me Claude has a small helper that saves
+it for the panel and shows `5h 42% · week 18%` under Claude's chat box.
+
+To turn it on, click **Turn on usage percentages** in the panel's Usage section (or run
+**View Me Claude: Turn on usage percentages** from the Command Palette). It asks first, then adds
+the status line to `~/.claude/settings.json` (keeping a backup beside it). If you already have a
+status line, it keeps yours: it puts your command in `VIEW_ME_CLAUDE_NEXT`, saves usage, and then
+shows your own line.
+
+The helper is kept in `~/.view-me-claude/statusline.js`, so it keeps working when the extension
+updates. Usage updates whenever a Claude Code session redraws. If your Claude Code version doesn't
+send usage yet, the panel says "not known yet"; updating Claude Code fixes that.
+
+To set it up by hand instead, add this to `~/.claude/settings.json`:
 
 ```json
-"statusLine": { "type": "command", "command": "node \"C:/Users/you/.vscode/extensions/view-me-claude/statusline.js\"" }
+"statusLine": { "type": "command", "command": "node \"C:/Users/you/.view-me-claude/statusline.js\"" }
 ```
-
-If you already have a status line, set the environment variable `VIEW_ME_CLAUDE_NEXT` to its command. The helper will still save usage, then show your own line. Usage updates whenever a Claude Code session redraws. If your Claude Code version doesn't send usage yet, the panel says "not known yet"; update Claude Code to fix that.
 
 ## Why not a button next to "Learn Claude Code"?
 
@@ -45,4 +56,4 @@ That button belongs to the Claude Code extension, and VS Code doesn't let one ex
 
 ## Contributing
 
-Ideas for more build tools, other bridges, or iOS devices (`xcrun devicectl`) are welcome. Run `npm test` (plain Node, no install needed). MIT licensed.
+Ideas for more build tools, other bridges, or iOS devices (`xcrun devicectl`) are welcome. Run `npm test` (plain Node, no install needed) and `npm run package` to make a `.vsix`. Releases: see RELEASING.md. MIT licensed.
