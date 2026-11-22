@@ -1,0 +1,35 @@
+# A release: make a release on GitHub with a new tag like v0.2.1 (raise "version" in package.json
+# first). This tests, packages the .vsix and attaches it to the release, then publishes to the
+# VS Code Marketplace and Open VSX if their tokens are set (repo Settings → Secrets → Actions:
+# VSCE_PAT and OVSX_PAT; see RELEASING.md).
+name: Release
+on:
+  release:
+    types: [published]
+
+jobs:
+  vsix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+      - run: npx --yes @vscode/vsce package --out view-me-claude.vsix
+      - name: Attach the .vsix to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" view-me-claude.vsix --clobber
+      - name: Publish to the VS Code Marketplace
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        if: env.VSCE_PAT != ''
+        run: npx --yes @vscode/vsce publish --packagePath view-me-claude.vsix
+      - name: Publish to Open VSX
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        if: env.OVSX_PAT != ''
+        run: npx --yes ovsx publish view-me-claude.vsix

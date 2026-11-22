@@ -1,0 +1,6 @@
+test/**
+.github/**
+CONTRIBUTING.md
+*.vsix
+node_modules/**
+RELEASING.md
